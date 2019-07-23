@@ -1,5 +1,5 @@
 import React from 'react'
-import useControl from '../../customHooks/useControl'
+import useControl from '../../hooks/useControl'
 
 const Leaf = ({name = 'defaultInput', label, initialValue = '', ...rest}) => {
     const [value, error, onChange, validate, reset] = useControl({initialValue, name, ...rest})

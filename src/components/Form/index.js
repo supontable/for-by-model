@@ -1,15 +1,22 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useMemo, useContext, useEffect } from 'react'
 import feedModel from '../../models/feed'
 import stepModel from '../../models/step'
 import Tree from './tree'
 import Tabs from '../Tabs'
+import {FormContext} from "../../FormContext"
+import prepareModel from "../../helpers"
+
+
 
 const FormContainer = () => {
-    const [modelFeed] = useState(prepareModel(feedModel))
-    const [modelStep] = useState(prepareModel(stepModel))
-    const form = useRef(null)
-    const forms = [modelFeed, modelStep]
+    const modelsContext = useContext(FormContext);
+    const [,,models, setModels] = modelsContext
 
+    const form = useRef(null)
+    const forms = models
+    useEffect(() => {
+        setModels(prepareModels([feedModel,stepModel]))
+    }, [])
     const handleSubmit = (event) => {
         event.preventDefault()
         let result = {}
@@ -20,40 +27,32 @@ const FormContainer = () => {
         console.log(JSON.stringify(result))
     }
 
-    return (
-        <Tabs className={'tabs'}>
-            {forms.length > 0 && forms.map((data, key) => {
-                return (
-                    <form ref={form} key={key} onSubmit={handleSubmit} label={key.toString()}>
-                        <Tree type={'root'}>
-                            {data}
-                        </Tree>
-                        <input type={'submit'} className={'submit'} value={'submit'} />
-                    </form>
-                )
-            })}
-        </Tabs>
-    )
+    return useMemo(()=> {
+            return <React.Fragment>
+                {forms.length > 0 && <Tabs className={'tabs'}>
+                    {forms.map((data, key) => {
+                        return (
+                            <form ref={form} key={key} onSubmit={handleSubmit} label={key.toString()}>
+                                <Tree type={'root'}>
+                                    {data}
+                                </Tree>
+                                <input type={'submit'} className={'submit'} value={'submit'}/>
+                            </form>
+                        )
+                    })}
+                </Tabs>}
+            </React.Fragment>
+        }
+    , [forms])
 }
 
-function prepareModel (model) {
-    if (!Array.isArray(model)) return false
-    let form = []
-    model.map(item => {
-        let step = item.step - 1 || 0
-        let line = item.line - 1 || 0
-        if (typeof form[step] === 'undefined') {
-            form[step] = [[item]]
-        } else {
-            if (typeof form[step][line] === 'undefined') {
-                form[step][line] = [item]
-            } else {
-                form[step][line] = [...form[step][line], item]
-            }
-        }
-        return item
-    })
-    return form
+function prepareModels(models) {
+    if (Array.isArray(models) && models.length > 0) {
+        console.log(models)
+        models = models.map(model => prepareModel(model))
+    }
+    console.log('models', models)
+    return models
 }
 
 export default FormContainer
