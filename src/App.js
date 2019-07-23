@@ -5,7 +5,7 @@ import {FormProvider} from "./FormContext"
 
 function App() {
   return (
-      <FormProvider model={[]}>
+      <FormProvider>
           <div className="App">
               <header className="App-header">
                   <Form />

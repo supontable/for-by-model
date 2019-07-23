@@ -7,9 +7,7 @@ const FormContext = React.createContext([
     () => []
 ]);
 
-const FormProvider = (props) => {
-    console.log('fp: ', props)
-    const {children} = props
+const FormProvider = ({children}) => {
     const [state, setState] = useState({})
     const [models, setModels] = useState([])
     return (

@@ -4,7 +4,7 @@ import { FormContext } from "../FormContext"
 const useControl = ({initialValue, name, ...rest}) => {
 
     const [context, setContext] = useContext(FormContext);
-    const value = context[name]
+    const value = context[rest.tab][`${rest.id}`]
     const [error, setError] = useState(null)
 
     function validate() {
@@ -22,9 +22,15 @@ const useControl = ({initialValue, name, ...rest}) => {
     }
 
     function onChange(event) {
-        const {value, name} = event.target
-        setContext({...context, value: value})
-        setContext(context => ({...context, [name]: value}))
+        const {value} = event.target
+        console.log('change', rest.id)
+        setContext(context => ({
+            ...context,
+            [rest.tab]: {
+                ...context[rest.tab],
+                [`${rest.id}`]: value
+            }
+        }))
     }
 
     return [value, error, onChange, validate, reset]

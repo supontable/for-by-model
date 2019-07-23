@@ -4,19 +4,21 @@ import stepModel from '../../models/step'
 import Tree from './tree'
 import Tabs from '../Tabs'
 import {FormContext} from "../../FormContext"
-import prepareModel from "../../helpers"
+import {prepareModels} from "../../helpers"
 
 
 
 const FormContainer = () => {
     const modelsContext = useContext(FormContext);
-    const [,,models, setModels] = modelsContext
+    const [,setState,models, setModels] = modelsContext
 
     const form = useRef(null)
     const forms = models
     useEffect(() => {
-        setModels(prepareModels([feedModel,stepModel]))
-    }, [])
+        const [models, list] = prepareModels([feedModel,stepModel])
+        setModels(models)
+        setState(list)
+}, [])
     const handleSubmit = (event) => {
         event.preventDefault()
         let result = {}
@@ -44,15 +46,6 @@ const FormContainer = () => {
             </React.Fragment>
         }
     , [forms])
-}
-
-function prepareModels(models) {
-    if (Array.isArray(models) && models.length > 0) {
-        console.log(models)
-        models = models.map(model => prepareModel(model))
-    }
-    console.log('models', models)
-    return models
 }
 
 export default FormContainer
