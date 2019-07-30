@@ -3,9 +3,7 @@ import Leaf from './leaf'
 import Tabs from '../Tabs'
 
 const Tree = ({children, type = 'root'}) => {
-    console.log(type)
     if (type === 'root' && children.length > 1) {
-        console.log('root l', children)
         return (
             <Tabs className={'tree ' + type}>
                 {Array.isArray(children)
